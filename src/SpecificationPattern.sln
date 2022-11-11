@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecificationPattern.Domain
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecificationPattern.Infra", "SpecificationPattern.Infra\SpecificationPattern.Infra.csproj", "{84FC1A31-2F95-4B7E-9708-F4BB5620A985}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecificationPattern.Infra.Migration", "SpecificationPattern.Infra.Migration\SpecificationPattern.Infra.Migration.csproj", "{8383941C-4F79-4CC3-900E-E2D4E2812444}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{84FC1A31-2F95-4B7E-9708-F4BB5620A985}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84FC1A31-2F95-4B7E-9708-F4BB5620A985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84FC1A31-2F95-4B7E-9708-F4BB5620A985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8383941C-4F79-4CC3-900E-E2D4E2812444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8383941C-4F79-4CC3-900E-E2D4E2812444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8383941C-4F79-4CC3-900E-E2D4E2812444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8383941C-4F79-4CC3-900E-E2D4E2812444}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

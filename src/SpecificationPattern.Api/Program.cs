@@ -15,10 +15,13 @@ namespace SpecificationPattern.Api
 
             var connectionString = builder.Configuration.GetConnectionString("ApplicationContext");
             builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
+            builder.Services.AddTransient<IRepository<Country>, Repository<Country>>();
             builder.Services.AddTransient<IRepository<Grape>, Repository<Grape>>();
             builder.Services.AddTransient<IRepository<Region>, Repository<Region>>();
             builder.Services.AddTransient<IRepository<Wine>, Repository<Wine>>();
             builder.Services.AddTransient<IRepository<Winery>, Repository<Winery>>();
+            builder.Services.AddTransient<ICountryUseCases, CountryUseCases>();
+            builder.Services.AddTransient<IRegionUseCases, RegionUseCases>();
             builder.Services.AddTransient<IWineUseCases, WineUseCases>();
             builder.Services.AddTransient<IWineryUseCases, WineryUseCases>();
 

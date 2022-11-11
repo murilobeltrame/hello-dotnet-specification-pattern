@@ -14,5 +14,7 @@
             Region = region;
             Grapes = grapes;
         }
+
+        private Wine() { }
     }
 }

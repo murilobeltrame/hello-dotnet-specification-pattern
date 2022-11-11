@@ -10,5 +10,7 @@
             Name = name;
             Country = country;
         }
+
+        private Region() { }
     }
 }

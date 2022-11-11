@@ -15,5 +15,7 @@ namespace SpecificationPattern.Domain.Interfaces
         Task DeleteAsync(Guid id, CancellationToken cancellationToken);
 
         Task<bool> ExistsAsync(ISpecification<T> specification, CancellationToken cancellationToken);
+
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

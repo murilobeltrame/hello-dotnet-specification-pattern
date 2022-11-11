@@ -8,5 +8,7 @@
         {
             Name = name;
         }
+
+        private Country() { }
     }
 }

@@ -10,5 +10,7 @@
             Name = name;
             Color = color;
         }
+
+        private Grape() { }
     }
 }

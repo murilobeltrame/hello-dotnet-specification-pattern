@@ -2,20 +2,20 @@
 
 namespace SpecificationPattern.Application.Interfaces
 {
-    public interface IWineryUseCases : IBaseCRUDUseCases<Winery, CreateWineryRequest, FetchWineriesRequest> { }
+    public interface ICountryUseCases : IBaseCRUDUseCases<Country, CreateCountryRequest, FetchCountriesRequest> { }
 
-    public class FetchWineriesRequest : IBaseFilter
+    public class FetchCountriesRequest: IBaseFilter
     {
+        public string? Name { get; set; }
+
         public uint? Page { get; set; }
 
         public ushort? Size { get; set; }
 
         public string? Sort { get; set; }
-
-        public string? Name { get; set; }
     }
 
-    public class CreateWineryRequest
+    public class CreateCountryRequest
     {
         public string Name { get; set; }
     }

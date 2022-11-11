@@ -5,35 +5,14 @@ using SpecificationPattern.Domain.Specifications;
 
 namespace SpecificationPattern.Application.UseCases
 {
-    public class WineryUseCases : IWineryUseCases
+    public class WineryUseCases : BaseCRUDUseCases<Winery, CreateWineryRequest, FetchWineriesRequest>, IWineryUseCases
     {
-        private readonly IRepository<Winery> _wineryRepository;
+        public WineryUseCases(IRepository<Winery> repository) : base(repository) { }
 
-        public WineryUseCases(IRepository<Winery> wineryRepository)
-        {
-            _wineryRepository = wineryRepository;
-        }
+        protected override Task<Winery> ConfigureCreateEntityAsync(CreateWineryRequest payload, CancellationToken cancellationToken = default) =>
+            Task.FromResult(new Winery(payload.Name));
 
-        public async Task<Winery> CreateWineAsync(IWineryCreationPayload payload, CancellationToken cancellationToken = default)
-        {
-            var winery = new Winery(payload.Name);
-            return await _wineryRepository.CreateAsync(winery, cancellationToken);
-        }
-
-        public async Task<Winery> GetWineAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            return await _wineryRepository.GetAsync(new GetWineryByIdSpecification(id), cancellationToken);
-        }
-
-        public async Task<object?> GetWinesAsync(IWineryFilter filter, CancellationToken cancellationToken = default)
-        {
-            var skip = filter.Page * filter.Size;
-            var spec = new FetchWineryByFilterSpecification(
-                filter.Name,
-                filter.Sort,
-                skip,
-                filter.Size);
-            return await _wineryRepository.FetchAsync(spec, cancellationToken);
-        }
+        protected override ISpecification<Winery> ConfigureSpecification(FetchWineriesRequest filter) =>
+            new FetchWineryByFilterSpecification(filter.Name, filter.Sort, filter.Page * filter.Size, filter.Size);
     }
 }

@@ -18,16 +18,16 @@ namespace SpecificationPattern.Infra.Repositories
         public async Task<T> CreateAsync(T record, CancellationToken cancellationToken = default) =>
             (await _db.Set<T>().AddAsync(record, cancellationToken)).Entity;
 
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var entitity = await GetAsync(new GetByIdSpecification<T>(id), cancellationToken);
             _db.Set<T>().Remove(entitity);
         }
 
-        public async Task<bool> ExistsAsync(ISpecification<T> specification, CancellationToken cancellationToken) =>
+        public async Task<bool> ExistsAsync(ISpecification<T> specification, CancellationToken cancellationToken = default) =>
              (await GetAsync(specification, cancellationToken)) != null;
 
-        public async Task<T> GetAsync(ISpecification<T> specification, CancellationToken cancellationToken)
+        public async Task<T> GetAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
         {
             var query = ProcessQuery(specification);
 
@@ -36,7 +36,7 @@ namespace SpecificationPattern.Infra.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<T>> FetchAsync(ISpecification<T> specification, CancellationToken cancellationToken)
+        public async Task<IEnumerable<T>> FetchAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
         {
             var query = ProcessQuery(specification);
             if (specification.Skip.HasValue)
@@ -50,14 +50,17 @@ namespace SpecificationPattern.Infra.Repositories
             return await query.ToListAsync(cancellationToken);
         }
 
-        public Task UpdateAsync(T record, CancellationToken cancellationToken)
+        public Task UpdateAsync(T record, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
+        public async Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            await _db.SaveChangesAsync(cancellationToken);
+
         private IQueryable<T> ProcessQuery(ISpecification<T> specification)
         {
-            var query = _db.Set<T>().AsNoTracking();
+            var query = _db.Set<T>().AsQueryable();
 
             if (specification.WhereExpressions.Any())
             {

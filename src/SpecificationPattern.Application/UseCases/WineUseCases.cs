@@ -31,7 +31,9 @@ namespace SpecificationPattern.Application.UseCases
             var grapes = await _grapeRepository.FetchAsync(new FetchGrapesByNameSpecification(winePayload.GrapeNames.Split(',')), cancellationToken);
 
             var wine = new Wine(winery, winePayload.Label, region, grapes);
-            return await _wineRepository.CreateAsync(wine, cancellationToken);
+            var createdWine = await _wineRepository.CreateAsync(wine, cancellationToken);
+            await _wineRepository.SaveChangesAsync(cancellationToken);
+            return createdWine;
         }
 
         public async Task<Wine> GetWineAsync(Guid id, CancellationToken cancellationToken = default)
