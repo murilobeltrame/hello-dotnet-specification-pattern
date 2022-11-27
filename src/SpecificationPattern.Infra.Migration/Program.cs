@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SpecificationPattern.Domain.Entities;
 using SpecificationPattern.Infra.Repositories;
 
 using IHost host = Host.CreateDefaultBuilder(args)

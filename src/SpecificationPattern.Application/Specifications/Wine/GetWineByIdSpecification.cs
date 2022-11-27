@@ -1,8 +1,9 @@
-﻿using SpecificationPattern.Domain.Entities;
+﻿using SpecificationPattern.Application.Commands.WineCommands;
+using SpecificationPattern.Domain.Entities;
 
 namespace SpecificationPattern.Domain.Specifications
 {
-    public class GetWineByIdSpecification : BaseSpecification<Wine>
+    public class GetWineByIdSpecification : BaseSpecification<Wine, WineOutput>
     {
         public GetWineByIdSpecification(Guid id)
         {
@@ -10,6 +11,7 @@ namespace SpecificationPattern.Domain.Specifications
             IncludeExpressions.Add(w => w.Grapes);
             IncludeExpressions.Add(w => w.Region.Country);
             IncludeExpressions.Add(w => w.Winery);
+            SelectExpression = SelectExpression = wine => WineOutput.FromEntity(wine);
         }
     }
 }

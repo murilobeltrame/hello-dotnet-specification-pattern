@@ -1,31 +1,14 @@
-﻿using SpecificationPattern.Domain.Entities;
+﻿using SpecificationPattern.Application.Commands.WineCommands;
+using SpecificationPattern.Application.Queries;
+using SpecificationPattern.Application.UseCases;
+using SpecificationPattern.Domain.Entities;
 
 namespace SpecificationPattern.Application.Interfaces
 {
     public interface IWineUseCases
     {
-        Task<Wine> CreateWineAsync(IWineCreationPayload request, CancellationToken cancellationToken = default);
-        Task<Wine> GetWineAsync(Guid id, CancellationToken cancellationToken = default);
-        Task<object?> GetWinesAsync(IWineFilter filter, CancellationToken cancellationToken = default);
-    }
-
-    public interface IWineFilter
-    {
-        uint? Page { get; }
-        ushort? Size { get; }
-        string? Sort { get; }
-        string? WineryName { get; }
-        string? Label { get; }
-        string? GrapeName { get; }
-        string? RegionName { get; }
-        string? CountryName { get; }
-    }
-
-    public interface IWineCreationPayload
-    {
-        string WineryName { get; }
-        string RegionName { get; }
-        string Label { get; }
-        string GrapeNames { get; }
+        Task<WineOutput> CreateWineAsync(CreateWineCommand request, CancellationToken cancellationToken = default);
+        Task<WineOutput> GetWineAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<IEnumerable<WineOutput>> GetWinesAsync(WinesQuery filter, CancellationToken cancellationToken = default);
     }
 }

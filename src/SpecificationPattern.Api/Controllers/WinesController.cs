@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SpecificationPattern.Api.Controllers.Requests;
-using SpecificationPattern.Api.Controllers.Responses;
+using SpecificationPattern.Application.Commands.WineCommands;
 using SpecificationPattern.Application.Interfaces;
+using SpecificationPattern.Application.Queries;
 using SpecificationPattern.Domain.Exceptions;
 using System.Net;
 using InvalidDataException = SpecificationPattern.Domain.Exceptions.InvalidDataException;
@@ -22,7 +22,7 @@ namespace SpecificationPattern.Api.Controllers
         }
 
         [HttpGet("{id}", Name = nameof(GetWine))]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(WineResponse))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(WineOutput))]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetWine(Guid id)
@@ -30,8 +30,7 @@ namespace SpecificationPattern.Api.Controllers
             try
             {
                 var wine = await _wineUseCases.GetWineAsync(id);
-                var response = WineResponse.FromEntity(wine);
-                return Ok(response);
+                return Ok(wine);
             }
             catch (NotFoundException nfe)
             {
@@ -41,22 +40,22 @@ namespace SpecificationPattern.Api.Controllers
         }
 
         [HttpGet(Name = nameof(FetchWines))]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<WineResponse>))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<WineOutput>))]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> FetchWines([FromQuery] FetchWinesRequest request)
+        public async Task<IActionResult> FetchWines([FromQuery] WinesQuery query)
         {
-            return Ok(await _wineUseCases.GetWinesAsync(request));
+            return Ok(await _wineUseCases.GetWinesAsync(query));
         }
 
         [HttpPost(Name = nameof(CreateWine))]
-        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(IEnumerable<WineResponse>))]
+        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(WineOutput))]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> CreateWine([FromBody] CreateWineRequest request)
+        public async Task<IActionResult> CreateWine([FromBody] CreateWineCommand request)
         {
             try
             {
                 var wine = await _wineUseCases.CreateWineAsync(request);
-                return CreatedAtAction(nameof(GetWine), new { id = wine.Id }, WineResponse.FromEntity(wine));
+                return CreatedAtAction(nameof(GetWine), new { id = wine.Id }, wine);
             }
             catch (InvalidDataException ide)
             {

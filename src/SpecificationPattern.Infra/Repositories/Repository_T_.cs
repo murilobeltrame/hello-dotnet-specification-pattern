@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SpecificationPattern.Application.Interfaces;
 using SpecificationPattern.Domain.Entities;
 using SpecificationPattern.Domain.Exceptions;
-using SpecificationPattern.Domain.Interfaces;
 using SpecificationPattern.Domain.Specifications;
 
 namespace SpecificationPattern.Infra.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly ApplicationContext _db;
 
@@ -15,19 +15,19 @@ namespace SpecificationPattern.Infra.Repositories
             _db = db;
         }
 
-        public async Task<T> CreateAsync(T record, CancellationToken cancellationToken = default) =>
-            (await _db.Set<T>().AddAsync(record, cancellationToken)).Entity;
+        public async Task<TEntity> CreateAsync(TEntity record, CancellationToken cancellationToken = default) =>
+            (await _db.Set<TEntity>().AddAsync(record, cancellationToken)).Entity;
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var entitity = await GetAsync(new GetByIdSpecification<T>(id), cancellationToken);
-            _db.Set<T>().Remove(entitity);
+            var entitity = await GetAsync(new GetByIdSpecification<TEntity>(id), cancellationToken);
+            _db.Set<TEntity>().Remove(entitity);
         }
 
-        public async Task<bool> ExistsAsync(ISpecification<T> specification, CancellationToken cancellationToken = default) =>
+        public async Task<bool> ExistsAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default) =>
              (await GetAsync(specification, cancellationToken)) != null;
 
-        public async Task<T> GetAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
+        public async Task<TProjection> GetAsync<TProjection>(ISpecification<TEntity, TProjection> specification, CancellationToken cancellationToken = default)
         {
             var query = ProcessQuery(specification);
 
@@ -36,7 +36,7 @@ namespace SpecificationPattern.Infra.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<T>> FetchAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TProjection>> FetchAsync<TProjection>(ISpecification<TEntity, TProjection> specification, CancellationToken cancellationToken = default)
         {
             var query = ProcessQuery(specification);
             if (specification.Skip.HasValue)
@@ -50,7 +50,7 @@ namespace SpecificationPattern.Infra.Repositories
             return await query.ToListAsync(cancellationToken);
         }
 
-        public Task UpdateAsync(T record, CancellationToken cancellationToken = default)
+        public Task UpdateAsync(TEntity record, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -58,9 +58,10 @@ namespace SpecificationPattern.Infra.Repositories
         public async Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
             await _db.SaveChangesAsync(cancellationToken);
 
-        private IQueryable<T> ProcessQuery(ISpecification<T> specification)
+        private IQueryable<TProjection> ProcessQuery<TProjection>(ISpecification<TEntity, TProjection> specification)
         {
-            var query = _db.Set<T>().AsQueryable();
+            IQueryable<TProjection> projectedQuery;
+            var query = _db.Set<TEntity>().AsQueryable();
 
             if (specification.WhereExpressions.Any())
             {
@@ -78,17 +79,25 @@ namespace SpecificationPattern.Infra.Repositories
                 }
             }
 
+            if (specification.SelectExpression != null)
+            {
+                projectedQuery = query.Select(specification.SelectExpression);
+            } else
+            {
+                projectedQuery = (IQueryable<TProjection>)query;
+            }
+
             if (specification.OrderByExpressions.Any())
             {
                 for (int i = 0; i < specification.OrderByExpressions.Count(); i++)
                 {
                     var orderByExpression = specification.OrderByExpressions.ElementAt(i);
-                    if (i == 0) query = query.OrderBy(orderByExpression);
-                    else query = ((IOrderedQueryable<T>)query).ThenBy(orderByExpression);
+                    if (i == 0) projectedQuery = projectedQuery.OrderBy(orderByExpression);
+                    else projectedQuery = ((IOrderedQueryable<TProjection>)projectedQuery).ThenBy(orderByExpression);
                 }
             }
 
-            return query;
+            return projectedQuery;
         }
     }
 

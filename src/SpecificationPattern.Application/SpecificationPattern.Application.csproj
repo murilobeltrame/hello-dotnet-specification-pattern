@@ -10,4 +10,16 @@
     <ProjectReference Include="..\SpecificationPattern.Domain\SpecificationPattern.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Specifications\" />
+    <None Remove="Commands\" />
+    <None Remove="Commands\WineCommands\" />
+    <None Remove="Queries\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Specifications\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Commands\WineCommands\" />
+    <Folder Include="Queries\" />
+  </ItemGroup>
 </Project>

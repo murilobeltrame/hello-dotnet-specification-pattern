@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using SpecificationPattern.Application.Interfaces;
 using SpecificationPattern.Application.UseCases;
 using SpecificationPattern.Domain.Entities;
-using SpecificationPattern.Domain.Interfaces;
 using SpecificationPattern.Infra.Repositories;
 
 namespace SpecificationPattern.Api
@@ -20,11 +19,7 @@ namespace SpecificationPattern.Api
             builder.Services.AddTransient<IRepository<Region>, Repository<Region>>();
             builder.Services.AddTransient<IRepository<Wine>, Repository<Wine>>();
             builder.Services.AddTransient<IRepository<Winery>, Repository<Winery>>();
-            builder.Services.AddTransient<ICountryUseCases, CountryUseCases>();
-            builder.Services.AddTransient<IRegionUseCases, RegionUseCases>();
             builder.Services.AddTransient<IWineUseCases, WineUseCases>();
-            builder.Services.AddTransient<IWineryUseCases, WineryUseCases>();
-
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

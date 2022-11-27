@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SpecificationPattern.Application\SpecificationPattern.Application.csproj" />
     <ProjectReference Include="..\SpecificationPattern.Infra\SpecificationPattern.Infra.csproj" />
   </ItemGroup>
 
